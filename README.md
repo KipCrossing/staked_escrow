@@ -2,6 +2,8 @@
 
 An EVM smart contract for escrows where each party has a stake
 
+WARNING: this is in WIP and has not been properly tested
+
 ## Features
 
 Here are the primary features of this contract:
