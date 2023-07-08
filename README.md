@@ -17,3 +17,7 @@ Here are the primary features of this contract:
     completeTrade(): The payer confirms the completion of the trade. The merchant receives the amount, and the payer gets back their staked amount.
 
 The 25% stake from both payer and merchant provides a deterrent for fraudulent activity, as both parties risk losing something if they do not fulfill their end of the deal. The escrow system is designed to prevent scenarios where the payer sends funds and does not receive the agreed-upon goods/services, or where the merchant provides the goods/services but is not paid.
+
+## NO WARRANTY
+
+THIS SOFTWARE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY OF ANY KIND, EXPRESS OR IMPLIED. THE AUTHOR, OWNERS, AND CONTRIBUTORS DISCLAIM ANY LIABILITY FOR ANY DAMAGES ARISING FROM THE USE OR INABILITY TO USE THIS SOFTWARE. USE OF THIS SOFTWARE IS AT YOUR OWN RISK AND DISCRETION.
