@@ -9,6 +9,7 @@ contract StakedEscrow {
     bool public isTrading;
     string public requestedGoodsDescription;
     bool public isDead;
+    bool public isDeposited;
     string public merchantContactDetails;
 
     // Events
@@ -34,8 +35,12 @@ contract StakedEscrow {
 
     function deposit() external payable {
         require(!isDead, "Escrow is dead");
+        require(!isDeposited, "Deposit is already made");
         require(msg.sender == buyer, "Only buyer can deposit");
         require(msg.value == amount + amount/4, "Incorrect amount deposited");
+        
+        isDeposited = true;
+        
         emit Deposit(msg.sender, msg.value);
     }
 
