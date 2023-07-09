@@ -3,13 +3,13 @@ pragma solidity ^0.8.20;
 
 contract StakedEscrow {
     string public name = "Staked Escrow";
-    address public payer;
+    address public buyer;
     address public merchant;
     uint256 public amount;
     bool public isTrading;
     string public requestedGoodsDescription;
     bool public isDead;
-    string public merchantContactDetails; // Add contact details string
+    string public merchantContactDetails;
 
     // Events
     event Deposit(address indexed _from, uint256 _value);
@@ -19,22 +19,22 @@ contract StakedEscrow {
     event EscrowCancelled();
 
     constructor(
+        address _buyer,
+        address _merchant,
         uint256 _amount,
-        address _payer,
         string memory _requestedGoodsDescription
     ) {
         require(_amount % 4 == 0, "amount must be a multiple of 4");
+        buyer = _buyer;
+        merchant = _merchant;
         amount = _amount;
-        payer = _payer;
         requestedGoodsDescription = _requestedGoodsDescription;
     }
 
-    error TradeInProgress();
-    error DeadEscrow();
 
     function deposit() external payable {
         require(!isDead, "Escrow is dead");
-        require(msg.sender == payer, "Only payer can deposit");
+        require(msg.sender == buyer, "Only buyer can deposit");
         require(msg.value == amount + amount/4, "Incorrect amount deposited");
         emit Deposit(msg.sender, msg.value);
     }
@@ -42,31 +42,31 @@ contract StakedEscrow {
     function cancelEscrow() external {
         require(!isDead, "Escrow is dead");
         require(!isTrading, "Trade in progress");
-        require(msg.sender == payer, "Only payer can cancel");
+        require(msg.sender == buyer, "Only buyer can cancel escrow");
 
         isDead = true;
         uint256 refundAmount = amount + amount/4;
 
         emit EscrowCancelled();
 
-        (bool success, ) = payable(payer).call{value: refundAmount}("");
+        (bool success, ) = payable(buyer).call{value: refundAmount}("");
         require(success, "Transfer failed");
     }
 
-    function enterTrade(string memory _contactDetails) external payable {
+    function enterTrade() external payable {
         require(!isDead, "Escrow is dead");
         require(!isTrading, "Trade in progress");
         require(msg.value == amount/4, "Incorrect amount deposited");
+        require(msg.sender == merchant, "Only the valid merchant can enter trade");
 
-        merchant = msg.sender;
         isTrading = true;
-        merchantContactDetails = _contactDetails; 
 
         emit TradeEntered(msg.sender, msg.value);
     }
 
     function cancelTrade() external {
         require(!isDead, "Escrow is dead");
+        require(isTrading, "Trade must be in progress to cancel");
         require(msg.sender == merchant, "Only merchant can cancel");
 
         isTrading = false;
@@ -80,18 +80,19 @@ contract StakedEscrow {
 
     function completeTrade() external {
         require(!isDead, "Escrow is dead");
-        require(msg.sender == payer, "Only payer can complete");
+        require(isTrading, "Trade must be in progress to complete");
+        require(msg.sender == buyer, "Only buyer can complete");
 
         isTrading = false;
         isDead = true;
-        uint256 merchantAmount = amount;
-        uint256 payerAmount = amount/4;
+        uint256 purchaseAmount = amount;
+        uint256 stakeAmount = amount/4;
 
         emit TradeCompleted(msg.sender);
 
-        (bool merchantSuccess, ) = payable(merchant).call{value: merchantAmount}("");
+        (bool merchantSuccess, ) = payable(merchant).call{value: purchaseAmount + stakeAmount}("");
         require(merchantSuccess, "Transfer to merchant failed");
-        (bool payerSuccess, ) = payable(payer).call{value: payerAmount}("");
-        require(payerSuccess, "Transfer to payer failed");
+        (bool buyerSuccess, ) = payable(buyer).call{value: stakeAmount}("");
+        require(buyerSuccess, "Transfer to buyer failed");
     }
 }
