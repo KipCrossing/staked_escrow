@@ -7,8 +7,7 @@ import { ethers } from "hardhat";
 
 describe("SingleStakedEscrow", function () {
   async function deployEscrowFixture() {
-    // const amount = ethers.parseEther("1"); // 1 Ether
-    let amount = BigInt(40);
+    const amount = ethers.parseEther("0.1"); // 1 Ether
     const description = "Test goods";
 
     const [buyer, merchant] = await ethers.getSigners();
