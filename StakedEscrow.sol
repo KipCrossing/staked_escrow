@@ -3,9 +3,9 @@ pragma solidity ^0.8.20;
 
 contract StakedEscrow {
     string public name = "Staked Escrow";
-    address public buyer;
-    address public merchant;
-    uint256 public amount;
+    address private buyer;
+    address private merchant;
+    uint256 private amount;
     bool public isTrading;
     string public requestedGoodsDescription;
     bool public isDead;
