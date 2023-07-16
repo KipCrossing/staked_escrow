@@ -1,24 +1,30 @@
-# staked_escrow
+# StakedEscrow
 
-An EVM smart contract for escrows where each party has a stake
+An EVM smart contract for escrows where each party has a stake.
+
+A 25% stake from both payer and merchant provides a deterrent for fraudulent activity, as both parties risk losing something if they do not fulfill their end of the deal. The escrow system is designed to prevent scenarios where the payer sends funds and does not receive the agreed-upon goods/services, or where the merchant provides the goods/services but funds are not released.
 
 WARNING: this is in WIP and has not been properly tested
 
 ## Features
 
-Here are the primary features of this contract:
+Here are the primary features of the `StakedEscrow` contract:
 
-**deposit()**: The payer (buyer) can deposit funds into the contract. The deposit must be equal to amount (the cost of goods/services) plus a 25% stake.
+**createEscrow(uint256 \_amount, string memory \_details) public payable returns(uint256)**
 
-**cancelEscrow()**: The payer can cancel the entire escrow before any trading has begun, in which case they receive a full refund.
+This function is used to create a new escrow. The merchant calls this function, specifying the total trade amount and details. It then creates a new escrow and returns the unique ID of the escrow.
 
-**enterTrade()**: A merchant (seller) can enter into a trade by depositing 25% of amount as a stake. They also provide their contact details.
+**deposit(uint256 \_escrowId) external payable**
 
-**cancelTrade()**: The merchant can cancel the trade and receive their staked amount back.
+This function is used by the buyer to deposit the funds necessary to cover the trade and their stake. The function checks if the escrow hasn't already been completed or cancelled, and that no buyer has been set yet. It also checks that the buyer is depositing exactly the right amount (the total trade amount plus 25% as a stake). The buyer's address is then recorded.
 
-**completeTrade()**: The payer confirms the completion of the trade. The merchant receives the amount and their stake, and the payer gets back their staked amount.
+**cancelEscrow(uint256 \_escrowId) external**
 
-The 25% stake from both payer and merchant provides a deterrent for fraudulent activity, as both parties risk losing something if they do not fulfill their end of the deal. The escrow system is designed to prevent scenarios where the payer sends funds and does not receive the agreed-upon goods/services, or where the merchant provides the goods/services but is not paid.
+This function allows the _merchant_ to cancel the escrow. It refunds the buyer (if there is one) and the merchant the amounts they put into the contract.
+
+**completeTrade(uint256 \_escrowId) external**
+
+This function allows the _buyer_ to mark the trade as completed. It marks the escrow as completed and transfers the total trade amount to the merchant (plus stake) and refunds the buyer's stake.
 
 ## Project
 
