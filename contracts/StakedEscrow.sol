@@ -16,6 +16,7 @@ contract StakedEscrow {
     mapping(uint256 => Escrow) public escrows;
 
     // Events
+    event EscrowCreated(uint256 indexed _escrowId, address indexed _merchant, uint256 _value);
     event Deposit(uint256 indexed _escrowId, address indexed _from, uint256 _value);
     event TradeCompleted(uint256 indexed _escrowId, address indexed _from);
     event EscrowCancelled(uint256 indexed _escrowId);
@@ -35,6 +36,8 @@ contract StakedEscrow {
             details: _details,
             isDead: false
         });
+
+        emit EscrowCreated(escrowId, msg.sender, _amount);
 
         return escrowId;
     }
