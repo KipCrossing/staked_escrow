@@ -12,7 +12,7 @@
     "test": "npx hardhat test"
   },
   "keywords": [],
-  "author": "",
+  "author": "Kipling Crossing",
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^20.4.1",
