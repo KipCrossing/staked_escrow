@@ -13,57 +13,21 @@ import * as Contracts from ".";
 declare module "hardhat/types/runtime" {
   interface HardhatEthersHelpers extends HardhatEthersHelpersBase {
     getContractFactory(
-      name: "Lock",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.Lock__factory>;
-    getContractFactory(
-      name: "SingleStakedEscrow",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.SingleStakedEscrow__factory>;
-    getContractFactory(
       name: "StakedEscrow",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.StakedEscrow__factory>;
 
     getContractAt(
-      name: "Lock",
-      address: string | ethers.Addressable,
-      signer?: ethers.Signer
-    ): Promise<Contracts.Lock>;
-    getContractAt(
-      name: "SingleStakedEscrow",
-      address: string | ethers.Addressable,
-      signer?: ethers.Signer
-    ): Promise<Contracts.SingleStakedEscrow>;
-    getContractAt(
       name: "StakedEscrow",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
     ): Promise<Contracts.StakedEscrow>;
 
     deployContract(
-      name: "Lock",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.Lock>;
-    deployContract(
-      name: "SingleStakedEscrow",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.SingleStakedEscrow>;
-    deployContract(
       name: "StakedEscrow",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.StakedEscrow>;
 
-    deployContract(
-      name: "Lock",
-      args: any[],
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.Lock>;
-    deployContract(
-      name: "SingleStakedEscrow",
-      args: any[],
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.SingleStakedEscrow>;
     deployContract(
       name: "StakedEscrow",
       args: any[],

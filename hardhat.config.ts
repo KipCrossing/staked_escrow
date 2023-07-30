@@ -7,7 +7,7 @@ const INFURA_API_KEY = process.env.INFURA_API_KEY!.toString();
 const ETH_PRIVATE_KEY = process.env.ETH_PRIVATE_KEY!.toString();
 
 module.exports = {
-  defaultNetwork: "sepolia",
+  defaultNetwork: "hardhat",
   networks: {
     hardhat: {},
     sepolia: {
