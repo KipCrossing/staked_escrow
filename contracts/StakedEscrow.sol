@@ -11,9 +11,12 @@ contract StakedEscrow {
         uint256 amount;
         string details;
         bool isDead;
+        bool complete;
     }
 
     mapping(uint256 => Escrow) public escrows;
+    mapping(address => uint256[]) public merchantEscrows;
+    mapping(address => uint256[]) public buyerEscrows;
 
     // Events
     event EscrowCreated(uint256 indexed _escrowId, address indexed _merchant, uint256 _value);
@@ -34,14 +37,20 @@ contract StakedEscrow {
             merchant: msg.sender,
             amount: _amount,
             details: _details,
-            isDead: false
+            isDead: false,
+            complete: false
         });
+
+        merchantEscrows[msg.sender].push(escrowId);
 
         emit EscrowCreated(escrowId, msg.sender, _amount);
 
         return escrowId;
     }
 
+    function getMerchantEscrows(address _merchant) public view returns (uint256[] memory) {
+        return merchantEscrows[_merchant];
+    }
 
     function deposit(uint256 _escrowId) external payable {
         Escrow storage escrow = escrows[_escrowId];
@@ -50,8 +59,14 @@ contract StakedEscrow {
         require(msg.value == escrow.amount + escrow.amount/4, "Incorrect amount deposited");
 
         escrow.buyer = msg.sender;
+        buyerEscrows[msg.sender].push(_escrowId);
+        
 
         emit Deposit(_escrowId, msg.sender, msg.value);
+    }
+
+    function getBuyerEscrows(address _buyer) public view returns (uint256[] memory) {
+        return buyerEscrows[_buyer];
     }
 
     function cancelEscrow(uint256 _escrowId) external {
@@ -81,6 +96,7 @@ contract StakedEscrow {
         
         
         escrow.isDead = true;
+        escrow.complete = true;
         uint256 payAmount = escrow.amount + escrow.amount/4;
 
         emit TradeCompleted(_escrowId, msg.sender);
