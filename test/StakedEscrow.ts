@@ -26,6 +26,18 @@ describe("StakedEscrow", function () {
       .to.emit(contract, "EscrowCreated")
       .withArgs(0, addr1Address, amount);
 
+    await expect(
+      contract.connect(addr1).createEscrow(amount, "escrow_details", {
+        value: ethers.parseEther("5"),
+      })
+    )
+      .to.emit(contract, "EscrowCreated")
+      .withArgs(1, addr1Address, amount);
+
+    const escrowIDs: number[] = await contract.getMerchantEscrows(addr1Address);
+    // console.log(escrowIDs);
+    expect(escrowIDs[0]).to.equal(0);
+    expect(escrowIDs[1]).to.equal(1);
     const escrow = await contract.escrows(0);
     expect(escrow.merchant).to.equal(addr1Address);
     expect(escrow.amount).to.equal(amount);
@@ -38,15 +50,20 @@ describe("StakedEscrow", function () {
     await contract.connect(addr1).createEscrow(amount, "escrow_details", {
       value: ethers.parseEther("5"),
     });
-
+    await contract.connect(addr1).createEscrow(amount, "escrow_details", {
+      value: ethers.parseEther("5"),
+    });
     await expect(
-      contract.connect(addr2).deposit(0, { value: ethers.parseEther("25") })
+      contract.connect(addr2).deposit(1, { value: ethers.parseEther("25") })
     )
       .to.emit(contract, "Deposit")
-      .withArgs(0, addr2Address, ethers.parseEther("25"));
+      .withArgs(1, addr2Address, ethers.parseEther("25"));
 
-    const escrow = await contract.escrows(0);
+    const escrow = await contract.escrows(1);
     expect(escrow.buyer).to.equal(addr2Address);
+    const escrowIDs: number[] = await contract.getBuyerEscrows(addr2Address);
+    console.log(escrowIDs);
+    expect(escrowIDs[0]).to.equal(1);
   });
 
   it("Should cancel escrow", async function () {
