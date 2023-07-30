@@ -26,11 +26,15 @@ import type {
 export interface StakedEscrowInterface extends Interface {
   getFunction(
     nameOrSignature:
+      | "buyerEscrows"
       | "cancelEscrow"
       | "completeTrade"
       | "createEscrow"
       | "deposit"
       | "escrows"
+      | "getBuyerEscrows"
+      | "getMerchantEscrows"
+      | "merchantEscrows"
       | "name"
       | "nextEscrowId"
   ): FunctionFragment;
@@ -43,6 +47,10 @@ export interface StakedEscrowInterface extends Interface {
       | "TradeCompleted"
   ): EventFragment;
 
+  encodeFunctionData(
+    functionFragment: "buyerEscrows",
+    values: [AddressLike, BigNumberish]
+  ): string;
   encodeFunctionData(
     functionFragment: "cancelEscrow",
     values: [BigNumberish]
@@ -63,12 +71,28 @@ export interface StakedEscrowInterface extends Interface {
     functionFragment: "escrows",
     values: [BigNumberish]
   ): string;
+  encodeFunctionData(
+    functionFragment: "getBuyerEscrows",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getMerchantEscrows",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "merchantEscrows",
+    values: [AddressLike, BigNumberish]
+  ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "nextEscrowId",
     values?: undefined
   ): string;
 
+  decodeFunctionResult(
+    functionFragment: "buyerEscrows",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "cancelEscrow",
     data: BytesLike
@@ -83,6 +107,18 @@ export interface StakedEscrowInterface extends Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "deposit", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "escrows", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getBuyerEscrows",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getMerchantEscrows",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "merchantEscrows",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "nextEscrowId",
@@ -198,6 +234,12 @@ export interface StakedEscrow extends BaseContract {
     event?: TCEvent
   ): Promise<this>;
 
+  buyerEscrows: TypedContractMethod<
+    [arg0: AddressLike, arg1: BigNumberish],
+    [bigint],
+    "view"
+  >;
+
   cancelEscrow: TypedContractMethod<
     [_escrowId: BigNumberish],
     [void],
@@ -221,14 +263,33 @@ export interface StakedEscrow extends BaseContract {
   escrows: TypedContractMethod<
     [arg0: BigNumberish],
     [
-      [string, string, bigint, string, boolean] & {
+      [string, string, bigint, string, boolean, boolean] & {
         buyer: string;
         merchant: string;
         amount: bigint;
         details: string;
         isDead: boolean;
+        complete: boolean;
       }
     ],
+    "view"
+  >;
+
+  getBuyerEscrows: TypedContractMethod<
+    [_buyer: AddressLike],
+    [bigint[]],
+    "view"
+  >;
+
+  getMerchantEscrows: TypedContractMethod<
+    [_merchant: AddressLike],
+    [bigint[]],
+    "view"
+  >;
+
+  merchantEscrows: TypedContractMethod<
+    [arg0: AddressLike, arg1: BigNumberish],
+    [bigint],
     "view"
   >;
 
@@ -240,6 +301,13 @@ export interface StakedEscrow extends BaseContract {
     key: string | FunctionFragment
   ): T;
 
+  getFunction(
+    nameOrSignature: "buyerEscrows"
+  ): TypedContractMethod<
+    [arg0: AddressLike, arg1: BigNumberish],
+    [bigint],
+    "view"
+  >;
   getFunction(
     nameOrSignature: "cancelEscrow"
   ): TypedContractMethod<[_escrowId: BigNumberish], [void], "nonpayable">;
@@ -261,14 +329,28 @@ export interface StakedEscrow extends BaseContract {
   ): TypedContractMethod<
     [arg0: BigNumberish],
     [
-      [string, string, bigint, string, boolean] & {
+      [string, string, bigint, string, boolean, boolean] & {
         buyer: string;
         merchant: string;
         amount: bigint;
         details: string;
         isDead: boolean;
+        complete: boolean;
       }
     ],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "getBuyerEscrows"
+  ): TypedContractMethod<[_buyer: AddressLike], [bigint[]], "view">;
+  getFunction(
+    nameOrSignature: "getMerchantEscrows"
+  ): TypedContractMethod<[_merchant: AddressLike], [bigint[]], "view">;
+  getFunction(
+    nameOrSignature: "merchantEscrows"
+  ): TypedContractMethod<
+    [arg0: AddressLike, arg1: BigNumberish],
+    [bigint],
     "view"
   >;
   getFunction(
