@@ -42,6 +42,7 @@ describe("StakedEscrow", function () {
     expect(escrow.merchant).to.equal(addr1Address);
     expect(escrow.amount).to.equal(amount);
     expect(escrow.details).to.equal("escrow_details");
+    expect(escrow.complete).to.equal(false);
   });
 
   it("Should deposit into escrow", async function () {
@@ -61,6 +62,7 @@ describe("StakedEscrow", function () {
 
     const escrow = await contract.escrows(1);
     expect(escrow.buyer).to.equal(addr2Address);
+    expect(escrow.complete).to.equal(false);
     const escrowIDs: number[] = await contract.getBuyerEscrows(addr2Address);
     console.log(escrowIDs);
     expect(escrowIDs[0]).to.equal(1);
@@ -82,6 +84,7 @@ describe("StakedEscrow", function () {
 
     const escrow = await contract.escrows(0);
     expect(escrow.isDead).to.equal(true);
+    expect(escrow.complete).to.equal(false);
   });
 
   it("Should complete trade", async function () {
@@ -100,5 +103,6 @@ describe("StakedEscrow", function () {
 
     const escrow = await contract.escrows(0);
     expect(escrow.isDead).to.equal(true);
+    expect(escrow.complete).to.equal(true);
   });
 });
