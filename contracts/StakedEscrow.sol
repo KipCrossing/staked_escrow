@@ -24,6 +24,10 @@ contract StakedEscrow {
     event TradeCompleted(uint256 indexed _escrowId, address indexed _from);
     event EscrowCancelled(uint256 indexed _escrowId);
 
+    function getEscrow(uint256 _escrowId) public view returns (Escrow memory) {
+        return escrows[_escrowId];
+    }
+
     function createEscrow(
         uint256 _amount,
         string memory _details

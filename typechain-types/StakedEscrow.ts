@@ -23,6 +23,33 @@ import type {
   TypedContractMethod,
 } from "./common";
 
+export declare namespace StakedEscrow {
+  export type EscrowStruct = {
+    buyer: AddressLike;
+    merchant: AddressLike;
+    amount: BigNumberish;
+    details: string;
+    isDead: boolean;
+    complete: boolean;
+  };
+
+  export type EscrowStructOutput = [
+    buyer: string,
+    merchant: string,
+    amount: bigint,
+    details: string,
+    isDead: boolean,
+    complete: boolean
+  ] & {
+    buyer: string;
+    merchant: string;
+    amount: bigint;
+    details: string;
+    isDead: boolean;
+    complete: boolean;
+  };
+}
+
 export interface StakedEscrowInterface extends Interface {
   getFunction(
     nameOrSignature:
@@ -33,6 +60,7 @@ export interface StakedEscrowInterface extends Interface {
       | "deposit"
       | "escrows"
       | "getBuyerEscrows"
+      | "getEscrow"
       | "getMerchantEscrows"
       | "merchantEscrows"
       | "name"
@@ -76,6 +104,10 @@ export interface StakedEscrowInterface extends Interface {
     values: [AddressLike]
   ): string;
   encodeFunctionData(
+    functionFragment: "getEscrow",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "getMerchantEscrows",
     values: [AddressLike]
   ): string;
@@ -111,6 +143,7 @@ export interface StakedEscrowInterface extends Interface {
     functionFragment: "getBuyerEscrows",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "getEscrow", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getMerchantEscrows",
     data: BytesLike
@@ -281,6 +314,12 @@ export interface StakedEscrow extends BaseContract {
     "view"
   >;
 
+  getEscrow: TypedContractMethod<
+    [_escrowId: BigNumberish],
+    [StakedEscrow.EscrowStructOutput],
+    "view"
+  >;
+
   getMerchantEscrows: TypedContractMethod<
     [_merchant: AddressLike],
     [bigint[]],
@@ -343,6 +382,13 @@ export interface StakedEscrow extends BaseContract {
   getFunction(
     nameOrSignature: "getBuyerEscrows"
   ): TypedContractMethod<[_buyer: AddressLike], [bigint[]], "view">;
+  getFunction(
+    nameOrSignature: "getEscrow"
+  ): TypedContractMethod<
+    [_escrowId: BigNumberish],
+    [StakedEscrow.EscrowStructOutput],
+    "view"
+  >;
   getFunction(
     nameOrSignature: "getMerchantEscrows"
   ): TypedContractMethod<[_merchant: AddressLike], [bigint[]], "view">;
