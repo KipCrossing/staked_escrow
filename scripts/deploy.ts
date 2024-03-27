@@ -1,4 +1,5 @@
 import { ethers, run } from "hardhat";
+import fs from "fs";
 
 async function main() {
   const StakedEscrow = await ethers.getContractFactory("StakedEscrow");
@@ -7,6 +8,8 @@ async function main() {
   const escrowAddress = await stakedEscrow.getAddress();
 
   console.log("StakedEscrow deployed to:", escrowAddress);
+  // write to file with fs
+  fs.writeFileSync("escrowAddress.txt", escrowAddress);
 }
 
 main()
